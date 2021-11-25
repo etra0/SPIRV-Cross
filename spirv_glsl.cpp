@@ -14865,8 +14865,16 @@ void CompilerGLSL::emit_block_chain(SPIRBlock &block)
 
 		size_t num_blocks = block_declaration_order.size();
 
-		const auto to_case_label = [](uint64_t literal, bool is_unsigned_case) -> string {
-			return is_unsigned_case ? convert_to_string(literal) : convert_to_string(int64_t(literal));
+		// Precompute the is_32bit_int since it's block based, not per-case
+		// based so we then move the bool to the lambda.
+		const bool is_32bit_int = (type.basetype == SPIRType::Int);
+		const auto to_case_label = [=](uint64_t literal, bool is_unsigned_case) -> string {
+			int64_t sign_extended = int64_t(literal);
+			if (is_32bit_int) {
+				sign_extended = int64_t(int32_t(literal));
+			}
+
+			return is_unsigned_case ? convert_to_string(literal) : convert_to_string(sign_extended);
 		};
 
 		const auto to_legacy_case_label = [&](uint32_t condition, const SmallVector<uint64_t> &labels,
