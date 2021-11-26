@@ -14865,25 +14865,19 @@ void CompilerGLSL::emit_block_chain(SPIRBlock &block)
 
 		size_t num_blocks = block_declaration_order.size();
 
-		const auto to_case_label = [](uint64_t literal, const SPIRType::BaseType &condition_type,
-		                              bool is_unsigned_case) -> string
+		const auto to_case_label = [](uint64_t literal, uint32_t width, bool is_unsigned_case) -> string
 		{
 			if (is_unsigned_case)
 				return convert_to_string(literal);
 
-			switch (condition_type)
+			// For smaller cases, the literals are casted to 32bit so we don't
+			// need to care for all sizes specifically.
+			if (width <= 32)
 			{
-			case SPIRType::SByte:
-				return convert_to_string(int64_t(int8_t(literal)));
-			case SPIRType::Short:
-				return convert_to_string(int64_t(int16_t(literal)));
-			case SPIRType::Int:
 				return convert_to_string(int64_t(int32_t(literal)));
-			case SPIRType::Int64:
-				return convert_to_string(int64_t(literal));
-			default:
-				SPIRV_CROSS_THROW("Invalid switch state");
 			}
+
+			return convert_to_string(int64_t(literal));
 		};
 
 		const auto to_legacy_case_label = [&](uint32_t condition, const SmallVector<uint64_t> &labels,
@@ -14928,7 +14922,7 @@ void CompilerGLSL::emit_block_chain(SPIRBlock &block)
 						auto &negative_literals = case_constructs[block_declaration_order[j]];
 						for (auto &case_label : negative_literals)
 							conditions.push_back(join(to_enclosed_expression(block.condition),
-							                          " != ", to_case_label(case_label, type.basetype, unsigned_case)));
+							                          " != ", to_case_label(case_label, type.width, unsigned_case)));
 					}
 
 					statement("if (", merge(conditions, " && "), ")");
@@ -14942,7 +14936,7 @@ void CompilerGLSL::emit_block_chain(SPIRBlock &block)
 					conditions.reserve(literals.size());
 					for (auto &case_label : literals)
 						conditions.push_back(join(to_enclosed_expression(block.condition),
-						                          " == ", to_case_label(case_label, type.basetype, unsigned_case)));
+						                          " == ", to_case_label(case_label, type.width, unsigned_case)));
 					statement("if (", merge(conditions, " || "), ")");
 					begin_scope();
 					flush_phi(block.self, target_block);
@@ -15006,8 +15000,7 @@ void CompilerGLSL::emit_block_chain(SPIRBlock &block)
 					for (auto &case_literal : literals)
 					{
 						// The case label value must be sign-extended properly in SPIR-V, so we can assume 32-bit values here.
-						statement("case ", to_case_label(case_literal, type.basetype, unsigned_case), label_suffix,
-						          ":");
+						statement("case ", to_case_label(case_literal, type.width, unsigned_case), label_suffix, ":");
 					}
 				}
 			}
@@ -15045,7 +15038,7 @@ void CompilerGLSL::emit_block_chain(SPIRBlock &block)
 		if ((header_merge_requires_phi && need_fallthrough_block) || !literals_to_merge.empty())
 		{
 			for (auto &case_literal : literals_to_merge)
-				statement("case ", to_case_label(case_literal, type.basetype, unsigned_case), label_suffix, ":");
+				statement("case ", to_case_label(case_literal, type.width, unsigned_case), label_suffix, ":");
 
 			if (block.default_block == block.next_block)
 			{
