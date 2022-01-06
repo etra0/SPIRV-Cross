@@ -5847,28 +5847,28 @@ bool CompilerGLSL::emit_complex_bitcast(uint32_t result_type, uint32_t id, uint3
 	return true;
 }
 
-static bool check_forward_limit_exceeded(uint32_t op0, uint32_t op1)
+bool CompilerGLSL::check_forward_limit_exceeded(uint32_t op0, uint32_t op1)
 {
-	static uint32_t forward_count = 0;
-	static uint32_t last_op0 = 0;
-	static uint32_t last_op1 = 0;
-
-	if ((last_op0 == op0) || (last_op0 == op1) || (last_op1 == op0) || (last_op1 == op1))
+	if (this->last_operation.op0 == 0 && this->last_operation.op1 == 0) {
+		this->last_operation.op0 = op0;
+		this->last_operation.op1 = op1;
+	}
+	else if ((this->last_operation.op0 == op0) || (this->last_operation.op0 == op1) || (this->last_operation.op1 == op0) || (this->last_operation.op1 == op1))
 	{
-		forward_count++;
+		this->last_operation.count++;
 	}
 	else
 	{
-		last_op0 = op0;
-		last_op1 = op1;
-		forward_count = 0;
+		this->last_operation.op0 = op0;
+		this->last_operation.op1 = op1;
+		this->last_operation.count = 0;
 	}
 
-	if (forward_count > 255)
+	if (this->last_operation.count > 255)
 	{
 		// Reset the count to allow the references to be forwared
 		// again to avoid single statements after the limit is reached.
-		forward_count = 0;
+		this->last_operation.count = 0;
 		return true;
 	}
 

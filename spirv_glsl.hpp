@@ -533,6 +533,15 @@ protected:
 	std::unordered_set<std::string> block_names; // A union of all block_*_names.
 	std::unordered_map<std::string, std::unordered_set<uint64_t>> function_overloads;
 	std::unordered_map<uint32_t, std::string> preserved_aliases;
+
+    struct forwarded_operations {
+        uint32_t op0, op1;
+        uint32_t count;
+    };
+
+    struct forwarded_operations last_operation { 0, 0, 0 };
+    bool check_forward_limit_exceeded(uint32_t op0, uint32_t op1);
+
 	void preserve_alias_on_reset(uint32_t id);
 	void reset_name_caches();
 
