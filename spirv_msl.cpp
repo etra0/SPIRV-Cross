@@ -1363,6 +1363,7 @@ string CompilerMSL::compile()
 	// Arrays which are part of buffer objects are never considered to be native arrays.
 	backend.buffer_offset_array_is_value_type = false;
 	backend.support_pointer_to_pointer = true;
+	backend.requires_casting_constructor = true;
 
 	capture_output_to_buffer = msl_options.capture_output_to_buffer;
 	is_rasterization_disabled = msl_options.disable_rasterization || capture_output_to_buffer;
@@ -10682,6 +10683,30 @@ void CompilerMSL::emit_struct_member(const SPIRType &type, uint32_t member_type_
 	builtin_declaration = false;
 }
 
+void CompilerMSL::emit_constructor(const SPIRType &parent_type, const SPIRType &type)
+{
+	const auto is_spv = this->spv_function_implementations.find(SPVFuncImplUnsafeArray);
+	if (is_spv == this->spv_function_implementations.end())
+		return;
+
+	const auto &parent_name = type_to_glsl(parent_type);
+	const auto &array_type = type_to_glsl(type);
+	const auto &array_size = type.array[0];
+
+	std::string member_name;
+	if (parent_type.member_name_cache.size() > 0)
+		member_name = *parent_type.member_name_cache.begin();
+	else
+		member_name = to_member_name(type, 0);
+	statement("explicit ", parent_name, "(", array_type, " v)");
+
+	begin_scope();
+	statement("for (int i = 0; i < ", convert_to_string(array_size), "; i++)");
+	begin_scope();
+	statement(member_name, "[i] = v[i];");
+	end_scope();
+	end_scope();
+}
 void CompilerMSL::emit_struct_padding_target(const SPIRType &type)
 {
 	uint32_t struct_size = get_declared_struct_size_msl(type, true, true);

@@ -1155,6 +1155,20 @@ void CompilerGLSL::emit_struct(SPIRType &type)
 		emitted = true;
 	}
 
+	// We check if we only have one member and if it's an array. In such case,
+	// for MSL we need to declare a constructor from spvUnsafeArray.
+	// TODO: Check if it's actually an array.
+	if (type.member_types.size() == 1)
+	{
+		auto &ty = get<SPIRType>(*type.member_types.begin());
+
+		if (ty.array.size() == 1 && ty.array[0] != 0 && ty.array_size_literal[0] &&
+		    backend.requires_casting_constructor)
+		{
+			emit_constructor(type, ty);
+		}
+	}
+
 	// Don't declare empty structs in GLSL, this is not allowed.
 	if (type_is_empty(type) && !backend.supports_empty_struct)
 	{

@@ -9,19 +9,8 @@ using namespace metal;
 template<typename T, size_t Num>
 struct spvUnsafeArray
 {
-    array<T, Num ? Num : 1> elements;
+    T elements[Num ? Num : 1];
     
-    template <class... Values>
-    explicit spvUnsafeArray(initializer_list<T> l) {
-        if (l.size() > Num) {
-            throw exception("wololo");
-        }
-
-        for (auto it = l.begin(), unsigned int i = 0; it != it.end(); it++, i++) {
-            elements[i] = *it;
-        }
-    }
-
     thread T& operator [] (size_t pos) thread
     {
         return elements[pos];
@@ -58,11 +47,25 @@ struct spvUnsafeArray
 struct _14
 {
     float _m0[3];
+    explicit _14(spvUnsafeArray<float, 3> v)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            _m0[i] = v[i];
+        }
+    }
 };
 
 struct _15
 {
     float _m0[3];
+    explicit _15(spvUnsafeArray<float, 3> v)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            _m0[i] = v[i];
+        }
+    }
 };
 
 constant spvUnsafeArray<float, 3> _93 = spvUnsafeArray<float, 3>({ 1.0, 2.0, 1.0 });
@@ -84,9 +87,9 @@ static inline __attribute__((always_inline))
 float4 _102(float4 _107)
 {
     float4 _109 = _107;
-    // _14 _110 = _14{ spvUnsafeArray<float, 3>({ 1.0, 2.0, 1.0 }) };
-    // _15 _111 = _15{ spvUnsafeArray<float, 3>({ -1.0, -2.0, -1.0 }) };
-    // _109.y = (_110._m0[2] + _111._m0[2]) + _109.y;
+    _14 _110 = _14{ spvUnsafeArray<float, 3>({ 1.0, 2.0, 1.0 }) };
+    _15 _111 = _15{ spvUnsafeArray<float, 3>({ -1.0, -2.0, -1.0 }) };
+    _109.y = (_110._m0[2] + _111._m0[2]) + _109.y;
     return _109;
 }
 

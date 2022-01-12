@@ -588,9 +588,11 @@ protected:
 		bool support_precise_qualifier = false;
 		bool support_64bit_switch = false;
 		bool workgroup_size_is_hidden = false;
+		bool requires_casting_constructor = false;
 	} backend;
 
 	void emit_struct(SPIRType &type);
+	virtual void emit_constructor(const SPIRType &, const SPIRType &){};
 	void emit_resources();
 	void emit_extension_workarounds(spv::ExecutionModel model);
 	void emit_buffer_block_native(const SPIRVariable &var);

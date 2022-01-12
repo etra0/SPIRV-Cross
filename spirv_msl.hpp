@@ -734,6 +734,8 @@ protected:
 	std::string type_to_glsl(const SPIRType &type, uint32_t id = 0) override;
 	void emit_block_hints(const SPIRBlock &block) override;
 
+	void emit_constructor(const SPIRType &parent_type, const SPIRType &type) override;
+
 	// Allow Metal to use the array<T> template to make arrays a value type
 	std::string type_to_array_glsl(const SPIRType &type) override;
 	std::string constant_op_expression(const SPIRConstantOp &cop) override;
