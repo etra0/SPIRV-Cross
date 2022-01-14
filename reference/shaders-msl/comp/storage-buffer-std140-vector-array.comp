@@ -63,6 +63,13 @@ struct Sub_1
 struct SSBO
 {
     Sub_1 sub[2];
+    explicit SSBO(spvUnsafeArray<Sub_1, 2> v)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            f[i] = v[i];
+        }
+    }
 };
 
 constant uint3 gl_WorkGroupSize [[maybe_unused]] = uint3(1u);
