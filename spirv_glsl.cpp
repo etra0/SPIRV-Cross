@@ -4690,8 +4690,8 @@ string CompilerGLSL::to_expression(uint32_t id, bool register_expression_read)
 			return to_name(id);
 		else if (!type.array.empty() && !backend.can_declare_arrays_inline)
 			return to_name(id);
-		else
-			return to_name(id);
+		else 
+			return constant_expression(c, false, true);
 	}
 
 	case TypeConstantOp:
@@ -4970,7 +4970,7 @@ string CompilerGLSL::constant_op_expression(const SPIRConstantOp &cop)
 	}
 }
 
-string CompilerGLSL::constant_expression(const SPIRConstant &c, bool inside_block_like_struct_scope)
+string CompilerGLSL::constant_expression(const SPIRConstant &c, bool inside_block_like_struct_scope, bool avoid_typename)
 {
 	auto &type = get<SPIRType>(c.constant_type);
 
@@ -4999,6 +4999,14 @@ string CompilerGLSL::constant_expression(const SPIRConstant &c, bool inside_bloc
 		{
 			res = type_to_glsl_constructor(type) + "{ ";
 		}
+
+		// @@@: Check for this
+		else if (avoid_typename && backend.use_initializer_list && backend.use_typed_initializer_list && backend.array_is_value_type &&
+		         !type.array.empty() && !array_type_decays) {
+			res = "({ ";
+			needs_trailing_tracket = true;
+		}
+
 		else if (backend.use_initializer_list && backend.use_typed_initializer_list && backend.array_is_value_type &&
 		         !type.array.empty() && !array_type_decays)
 		{
