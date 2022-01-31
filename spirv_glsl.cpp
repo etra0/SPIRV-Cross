@@ -4691,7 +4691,7 @@ string CompilerGLSL::to_expression(uint32_t id, bool register_expression_read)
 		else if (!type.array.empty() && !backend.can_declare_arrays_inline)
 			return to_name(id);
 		else
-			return constant_expression(c);
+			return to_name(id);
 	}
 
 	case TypeConstantOp:
