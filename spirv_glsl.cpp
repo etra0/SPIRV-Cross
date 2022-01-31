@@ -5028,7 +5028,7 @@ string CompilerGLSL::constant_expression(const SPIRConstant &c, bool inside_bloc
 			if (subc.specialization)
 				res += to_name(elem);
 			else
-				res += constant_expression(subc, inside_block_like_struct_scope);
+				res += constant_expression(subc, inside_block_like_struct_scope, true);
 
 			if (&elem != &c.subconstants.back())
 				res += ", ";
