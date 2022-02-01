@@ -4994,6 +4994,7 @@ string CompilerGLSL::constant_expression(const SPIRConstant &c, bool inside_bloc
 
 		// Allow Metal to use the array<T> template to make arrays a value type
 		bool needs_trailing_tracket = false;
+		bool needs_trailing_bracket = true;
 		if (backend.use_initializer_list && backend.use_typed_initializer_list && type.basetype == SPIRType::Struct &&
 		    type.array.empty())
 		{
@@ -5003,8 +5004,9 @@ string CompilerGLSL::constant_expression(const SPIRConstant &c, bool inside_bloc
 		// @@@: Check for this
 		else if (avoid_typename && backend.use_initializer_list && backend.use_typed_initializer_list && backend.array_is_value_type &&
 		         !type.array.empty() && !array_type_decays) {
-			res = "({ ";
-			needs_trailing_tracket = true;
+			res = "";
+			needs_trailing_tracket = false;
+			needs_trailing_bracket = false;
 		}
 
 		else if (backend.use_initializer_list && backend.use_typed_initializer_list && backend.array_is_value_type &&
@@ -5034,7 +5036,8 @@ string CompilerGLSL::constant_expression(const SPIRConstant &c, bool inside_bloc
 				res += ", ";
 		}
 
-		res += backend.use_initializer_list ? " }" : ")";
+		if (needs_trailing_bracket)
+			res += backend.use_initializer_list ? " }" : ")";
 		if (needs_trailing_tracket)
 			res += ")";
 
