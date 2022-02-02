@@ -1142,6 +1142,8 @@ protected:
 
 	bool is_vertex_like_shader() const;
 
+	bool can_ignore_offset_decoration(const SPIRType &type, uint32_t index) const;
+
 	// Get the correct case list for the OpSwitch, since it can be either a
 	// 32 bit wide condition or a 64 bit, but the type is not embedded in the
 	// instruction itself.

@@ -8637,6 +8637,7 @@ void CompilerMSL::emit_array_copy(const string &lhs, uint32_t lhs_id, uint32_t r
 	// This special case should also only apply to Function/Private storage classes.
 	// We should not check backing variable for temporaries.
 	auto *lhs_var = maybe_get_backing_variable(lhs_id);
+
 	if (lhs_var && lhs_storage == StorageClassStorageBuffer && storage_class_array_is_thread(lhs_var->storage))
 		lhs_is_array_template = true;
 	else if (lhs_var && (lhs_storage == StorageClassFunction || lhs_storage == StorageClassPrivate) &&
@@ -10616,7 +10617,8 @@ string CompilerMSL::to_struct_member(const SPIRType &type, uint32_t member_type_
 	// and generally we cannot copy full arrays in and out of buffers into Function
 	// address space.
 	// Array of resources should also be declared as builtin arrays.
-	if (has_member_decoration(type.self, index, DecorationOffset))
+	if (has_member_decoration(type.self, index, DecorationOffset) &&
+	    !Compiler::can_ignore_offset_decoration(type, index))
 		is_using_builtin_array = true;
 	else if (has_extended_member_decoration(type.self, index, SPIRVCrossDecorationResourceIndexPrimary))
 		is_using_builtin_array = true;

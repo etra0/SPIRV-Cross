@@ -1040,6 +1040,12 @@ bool Compiler::type_is_block_like(const SPIRType &type) const
 	return false;
 }
 
+bool Compiler::can_ignore_offset_decoration(const SPIRType &type, uint32_t index) const
+{
+	uint32_t offset = type_struct_member_offset(type, index);
+	return (offset == 0) && (type.member_types.size() == 1);
+}
+
 void Compiler::parse_fixup()
 {
 	// Figure out specialization constants for work group sizes.

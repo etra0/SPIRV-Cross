@@ -894,6 +894,8 @@ protected:
 	uint32_t get_declared_struct_member_matrix_stride_msl(const SPIRType &struct_type, uint32_t index) const;
 	uint32_t get_declared_struct_member_alignment_msl(const SPIRType &struct_type, uint32_t index) const;
 
+	bool can_ignore_offset_decoration(const SPIRType &type, uint32_t index);
+
 	uint32_t get_declared_input_size_msl(const SPIRType &struct_type, uint32_t index) const;
 	uint32_t get_declared_input_array_stride_msl(const SPIRType &struct_type, uint32_t index) const;
 	uint32_t get_declared_input_matrix_stride_msl(const SPIRType &struct_type, uint32_t index) const;
