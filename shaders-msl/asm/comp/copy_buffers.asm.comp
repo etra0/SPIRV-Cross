@@ -1,0 +1,44 @@
+; SPIR-V
+; Version: 1.0
+; Generator: Khronos SPIR-V Tools Assembler; 0
+; Bound: 25
+; Schema: 0
+               OpCapability Shader
+               OpExtension "SPV_KHR_storage_buffer_storage_class"
+               OpMemoryModel Logical GLSL450
+               OpEntryPoint GLCompute %1 "main" %gl_GlobalInvocationID
+               OpExecutionMode %1 LocalSize 1 1 1
+               OpDecorate %gl_GlobalInvocationID BuiltIn GlobalInvocationId
+               OpDecorate %3 Binding 0
+               OpDecorate %3 DescriptorSet 0
+               OpDecorate %4 Binding 1
+               OpDecorate %4 DescriptorSet 0
+               OpMemberDecorate %_struct_5 0 Offset 0
+               OpMemberDecorate %_struct_5 1 Offset 4
+               OpDecorate %_struct_5 Block
+       %bool = OpTypeBool
+       %void = OpTypeVoid
+          %8 = OpTypeFunction %void
+       %uint = OpTypeInt 32 0
+        %int = OpTypeInt 32 1
+      %float = OpTypeFloat 32
+     %v3uint = OpTypeVector %uint 3
+    %v3float = OpTypeVector %float 3
+%_ptr_Input_v3uint = OpTypePointer Input %v3uint
+%_ptr_Uniform_int = OpTypePointer Uniform %int
+%_ptr_Uniform_float = OpTypePointer Uniform %float
+%_runtimearr_int = OpTypeRuntimeArray %int
+%_runtimearr_float = OpTypeRuntimeArray %float
+  %_struct_5 = OpTypeStruct %int %int
+%_ptr_Uniform__struct_5 = OpTypePointer Uniform %_struct_5
+%_ptr_StorageBuffer__struct_5 = OpTypePointer StorageBuffer %_struct_5
+%gl_GlobalInvocationID = OpVariable %_ptr_Input_v3uint Input
+          %3 = OpVariable %_ptr_Uniform__struct_5 Uniform
+          %4 = OpVariable %_ptr_StorageBuffer__struct_5 StorageBuffer
+          %1 = OpFunction %void None %8
+         %22 = OpLabel
+         %23 = OpCopyObject %_ptr_Uniform__struct_5 %3
+         %24 = OpLoad %_struct_5 %23
+               OpStore %4 %24
+               OpReturn
+               OpFunctionEnd

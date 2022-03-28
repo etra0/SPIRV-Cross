@@ -1,0 +1,16 @@
+#include <metal_stdlib>
+#include <simd/simd.h>
+
+using namespace metal;
+
+struct _5
+{
+    int _m0;
+    int _m1;
+};
+
+kernel void main0(constant _5& _3 [[buffer(0)]], device _5& _4 [[buffer(1)]])
+{
+    _4 = *_3;
+}
+
