@@ -367,7 +367,8 @@ kernel void main0(main0_in in [[stage_in]], constant type_View& View [[buffer(0)
     uint _265 = 2u * _254;
     uint _266 = 3u + _265;
     uint _267 = _265 + 4u;
-    float4 _279 = float4(param_var_I[9u + gl_InvocationID].FactoryInterpolants.InterpolantsVSToPS.TangentToWorld2.xyz, 0.0);
+    uint _268 = 9u + gl_InvocationID;
+    float4 _279 = float4(param_var_I[_268].FactoryInterpolants.InterpolantsVSToPS.TangentToWorld2.xyz, 0.0);
     float4 _315;
     float4 _316;
     float4 _317;
@@ -402,14 +403,14 @@ kernel void main0(main0_in in [[stage_in]], constant type_View& View [[buffer(0)
     gl_out[gl_InvocationID].out_var_PN_WorldDisplacementMultiplier = 1.0;
     gl_out[gl_InvocationID].out_var_PN_DominantVertex = float2(0.0);
     gl_out[gl_InvocationID].out_var_PN_DominantVertex1 = _279;
-    gl_out[gl_InvocationID].out_var_PN_DominantVertex2 = param_var_I[9u + gl_InvocationID].FactoryInterpolants.InterpolantsVSToPS.TangentToWorld0.xyz;
+    gl_out[gl_InvocationID].out_var_PN_DominantVertex2 = param_var_I[_268].FactoryInterpolants.InterpolantsVSToPS.TangentToWorld0.xyz;
     gl_out[gl_InvocationID].out_var_PN_DominantEdge = float2(0.0);
     gl_out[gl_InvocationID].out_var_PN_DominantEdge1 = float2(0.0);
     gl_out[gl_InvocationID].out_var_PN_DominantEdge2 = _324;
     gl_out[gl_InvocationID].out_var_PN_DominantEdge3 = _328;
     gl_out[gl_InvocationID].out_var_PN_DominantEdge4 = _317.xyz;
     gl_out[gl_InvocationID].out_var_PN_DominantEdge5 = _315.xyz;
-    temp_var_hullMainRetVal[gl_InvocationID] = FPNTessellationHSToDS{ param_var_I[gl_InvocationID], _402, _251, 1.0, 1.0, FHullShaderConstantDominantVertexData{ float2(0.0), _279, param_var_I[9u + gl_InvocationID].FactoryInterpolants.InterpolantsVSToPS.TangentToWorld0.xyz }, FHullShaderConstantDominantEdgeData{ float2(0.0), float2(0.0), _324, _328, _317.xyz, _315.xyz } };
+    temp_var_hullMainRetVal[gl_InvocationID] = FPNTessellationHSToDS{ param_var_I[gl_InvocationID], _402, _251, 1.0, 1.0, FHullShaderConstantDominantVertexData{ float2(0.0), _279, param_var_I[_268].FactoryInterpolants.InterpolantsVSToPS.TangentToWorld0.xyz }, FHullShaderConstantDominantEdgeData{ float2(0.0), float2(0.0), _324, _328, _317.xyz, _315.xyz } };
     threadgroup_barrier(mem_flags::mem_device | mem_flags::mem_threadgroup);
     if (gl_InvocationID == 0u)
     {

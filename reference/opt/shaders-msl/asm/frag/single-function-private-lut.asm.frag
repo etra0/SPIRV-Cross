@@ -66,7 +66,8 @@ fragment main0_out main0(float4 gl_FragCoord [[position]])
     spvUnsafeArray<myType, 5> _21 = spvUnsafeArray<myType, 5>({ myType{ 0.0 }, myType{ 1.0 }, myType{ 0.0 }, myType{ 1.0 }, myType{ 0.0 } });
     
     main0_out out = {};
-    if (_21[int(mod(gl_FragCoord.x, 4.0))].data > 0.0)
+    int _44 = int(mod(gl_FragCoord.x, 4.0));
+    if (_21[_44].data > 0.0)
     {
         out.o_color = float4(0.0, 1.0, 0.0, 1.0);
     }

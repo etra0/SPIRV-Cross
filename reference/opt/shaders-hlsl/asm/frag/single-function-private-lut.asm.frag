@@ -42,7 +42,8 @@ float4 mod(float4 x, float4 y)
 
 void frag_main()
 {
-    if (_21[int(mod(gl_FragCoord.x, 4.0f))].data > 0.0f)
+    int _44 = int(mod(gl_FragCoord.x, 4.0f));
+    if (_21[_44].data > 0.0f)
     {
         o_color = float4(0.0f, 1.0f, 0.0f, 1.0f);
     }
